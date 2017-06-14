@@ -298,7 +298,8 @@ class ManagementUtility:
         # These options could affect the commands that are available, so they
         # must be processed early.
 
-        # django 并没有用标准库的argparser来做命令行参数的转化，而是用它自己的实现.
+        # django 在标准库的argparser上作出了一些自定义
+        # CommandParser 继承了argparser.ArgumentParser
         # CommandParser 位于 jango.core.management.base 这个包中.
         parser = CommandParser(None, usage="%(prog)s subcommand [options] [args]", add_help=False)
         parser.add_argument('--settings')
