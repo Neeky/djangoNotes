@@ -131,8 +131,14 @@ class ManagementUtility:
     Encapsulate the logic of the django-admin and manage.py utilities.
     """
     def __init__(self, argv=None):
+        # 如果在实例化的时候有传递参数给argv 那么self.argv的值就是argv 
+        # 不然就从命令行中取
         self.argv = argv or sys.argv[:]
+
+        # 返回应用程序的文件名，也就是说这里的slef.prog_name会被赋值成django-admin
         self.prog_name = os.path.basename(self.argv[0])
+
+        # self.settings_exception默认值是None
         self.settings_exception = None
 
     def main_help_text(self, commands_only=False):
@@ -279,13 +285,21 @@ class ManagementUtility:
         run, create a parser appropriate to that command, and run it.
         """
         try:
+            # 如果在调用django-admin 的时候没有给出任何的 命令 & 选项
+            # 那么slef.argv 列表只有一项 它就是slef.argv[0] 它的值为django-admin
+            # 所以这种情况下正好会报 IndexError
             subcommand = self.argv[1]
         except IndexError:
+            # 如果没有给出任何命令的情况下 把subcommand设置为help
+            # 也就是说不给出命令的情况下 就当做是看django-admin的帮助.
             subcommand = 'help'  # Display help if no arguments were given.
 
         # Preprocess options to extract --settings and --pythonpath.
         # These options could affect the commands that are available, so they
         # must be processed early.
+
+        # django 并没有用标准库的argparser来做命令行参数的转化，而是用它自己的实现.
+        # CommandParser 位于 jango.core.management.base 这个包中.
         parser = CommandParser(None, usage="%(prog)s subcommand [options] [args]", add_help=False)
         parser.add_argument('--settings')
         parser.add_argument('--pythonpath')
@@ -350,5 +364,6 @@ class ManagementUtility:
 
 def execute_from_command_line(argv=None):
     """Run a ManagementUtility."""
+    #从这里可以看出execute_from_command_line调用的是ManagementUtility类的一个实例的execute方法
     utility = ManagementUtility(argv)
     utility.execute()
