@@ -283,6 +283,8 @@ class ManagementUtility:
         """
         Given the command-line arguments, figure out which subcommand is being
         run, create a parser appropriate to that command, and run it.
+        1、命令行参数解析
+        2、
         """
         try:
             # 如果在调用django-admin 的时候没有给出任何的 命令 & 选项
@@ -312,6 +314,7 @@ class ManagementUtility:
             pass  # Ignore any option errors at this point.
 
         try:
+            # settings 是在django.conf包中定义的一个类
             settings.INSTALLED_APPS
         except ImproperlyConfigured as exc:
             self.settings_exception = exc
