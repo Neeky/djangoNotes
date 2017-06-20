@@ -14,7 +14,8 @@ import warnings
 from django.conf import global_settings
 from django.core.exceptions import ImproperlyConfigured
 from django.utils.deprecation import RemovedInDjango30Warning
-from django.utils.functional import LazyObject, empty
+from django.utils.functional import LazyObject, empty # empty = object() 也就是说这个empty就是一个object对象
+
 
 ENVIRONMENT_VARIABLE = "DJANGO_SETTINGS_MODULE"
 
