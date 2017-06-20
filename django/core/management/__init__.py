@@ -142,6 +142,7 @@ class ManagementUtility:
         self.settings_exception = None
 
     def main_help_text(self, commands_only=False):
+        # 调用 django-admin --help 时就是输出main_help_text函数的内容
         """Return the script's main help text, as a string."""
         if commands_only:
             usage = sorted(get_commands())
@@ -303,6 +304,8 @@ class ManagementUtility:
         # django 在标准库的argparser上作出了一些自定义
         # CommandParser 继承了argparser.ArgumentParser
         # CommandParser 位于 jango.core.management.base 这个包中.
+        # usage & add_help 都是argparser.ArgumentParser.__init__中的参数
+        # CommandParser.__init__(self, cmd, **kwargs): 由这里可以看了cmd=None
         parser = CommandParser(None, usage="%(prog)s subcommand [options] [args]", add_help=False)
         parser.add_argument('--settings')
         parser.add_argument('--pythonpath')
@@ -314,7 +317,9 @@ class ManagementUtility:
             pass  # Ignore any option errors at this point.
 
         try:
-            # settings 是在django.conf包中定义的一个类
+            # settings 是在django.conf包中LazySettings类的实例
+            # 这里有个问题，就是在LazySettings类的代码中没有找到INSTALLED_APPS 的定义
+            # settings.INSTALLED_APPS 像这样的语句又有什么意义呢？难道它这样干就单单是为了引发异常？
             settings.INSTALLED_APPS
         except ImproperlyConfigured as exc:
             self.settings_exception = exc
